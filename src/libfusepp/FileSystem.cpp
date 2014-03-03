@@ -23,6 +23,7 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <fusepp/FileSystem.h>
+#include <fuse.h>
 using namespace fusepp;
 
 FileSystem::FileSystem()

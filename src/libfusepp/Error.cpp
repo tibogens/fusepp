@@ -102,6 +102,7 @@ int myvsnprintf(char* buffer, size_t bufsize, const char* format, va_list arglis
 
 Error Error::System(const std::string& api)
 {
+#ifdef _WIN32
 	LPVOID lpvMessageBuffer;
 	CHAR szPrintBuffer[512];
 	DWORD nCharsWritten;
@@ -123,5 +124,11 @@ Error Error::System(const std::string& api)
 	LocalFree(lpvMessageBuffer);
 
 	return Error(copy.c_str());
+	
+#else //_WIN32
+
+	return Error(api.c_str());
+
+#endif //_WIN32
 }
 

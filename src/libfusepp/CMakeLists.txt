@@ -1,5 +1,10 @@
 SET(LIB_NAME libfusepp)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FUSE fuse REQUIRED)
+include_directories(${FUSE_INCLUDEDIR})
+add_definitions(${FUSE_CFLAGS})
+
 SET(HEADER_PATH ${fusepp_SOURCE_DIR}/include/fusepp)
 
 SET(LIB_PUBLIC_HEADERS
@@ -26,7 +31,7 @@ ADD_LIBRARY(${LIB_NAME}
 	${LIB_SRC}
 )
 
-TARGET_LINK_LIBRARIES(${LIB_NAME}
+TARGET_LINK_LIBRARIES(${LIB_NAME} ${FUSE_LIBRARIES}
 )
 
 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PROJECT_LABEL "core - libfusepp")
