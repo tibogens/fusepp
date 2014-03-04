@@ -38,7 +38,7 @@ public:
 	CompositeQuery(DatabasePtr db, unsigned int constraints = 0);
 	virtual ~CompositeQuery();
 
-	// Override of the uflrDB::Query interface
+	// Override of the fusepp::Query interface
 	bool execute(bool throwOnFail = false);
 	void reset(unsigned int constraints = 0);
 
@@ -59,4 +59,4 @@ private:
 
 };
 
-#endif // _UFLRDB_COMPOSITEQUERY_H
+#endif // _FUSEPP_PG_COMPOSITEQUERY_H

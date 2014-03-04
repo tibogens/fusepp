@@ -24,11 +24,8 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 #include <libpq-fe.h>
 #include <stdarg.h>
 #include <algorithm>
-//#include <OpenThreads/Thread>
-//#include <OpenThreads/ScopedLock>
 #include <fusepp/pg/Database.h>
 #include <fusepp/pg/Query.h>
-//#include <uflr/Utils.h>
 #include <iostream>
 #include <locale>
 #ifndef _WIN32
@@ -40,7 +37,7 @@ using namespace fusepp;
 Database::Database() : _pgconn(NULL)
 {
 #ifdef _DEBUG
-	_ownerThread = uflr::getCurrentThreadId();
+	_ownerThread = fusepp::getCurrentThreadId();
 #endif
 }
 
@@ -74,7 +71,7 @@ bool Database::connect(const std::string& host,
 bool Database::connectFromPgString(const std::string& connection)
 {
 #ifdef _DEBUG
-	assert(uflr::getCurrentThreadId() == _ownerThread);
+	assert(fusepp::getCurrentThreadId() == _ownerThread);
 #endif
 
 	_connectionString = connection;
@@ -112,7 +109,7 @@ bool Database::disconnect()
 std::string Database::escape(const char* in) const
 {
 #ifdef _DEBUG
-	assert(uflr::getCurrentThreadId() == _ownerThread);
+	assert(fusepp::getCurrentThreadId() == _ownerThread);
 #endif
 
 	if (in == NULL)
@@ -128,7 +125,7 @@ std::string Database::escape(const char* in) const
 std::string Database::escape(const std::string& in) const
 {
 #ifdef _DEBUG
-	assert(uflr::getCurrentThreadId() == _ownerThread);
+	assert(fusepp::getCurrentThreadId() == _ownerThread);
 #endif
 
 	size_t length = in.size();
@@ -142,7 +139,7 @@ std::string Database::escape(const std::string& in) const
 Oid Database::getTypeOid(const std::string& type)
 {
 #ifdef _DEBUG
-	assert(uflr::getCurrentThreadId() == _ownerThread);
+	assert(fusepp::getCurrentThreadId() == _ownerThread);
 #endif
 
 	assert(_pgconn);

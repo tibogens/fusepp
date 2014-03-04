@@ -122,7 +122,7 @@ public:
 	CRUDOBJ_GETTER_SETTER(t, asText, std::string&, const std::string&);
 	CRUDOBJ_GETTER_SETTER(f, asDouble, double&, double);
 	CRUDOBJ_GETTER_SETTER(d, asDate, std::string&, const std::string&);
-	//CRUDOBJ_GETTER(ba, asBytea, uflr::RefBuffer<char>*, const uflr::RefBuffer<char>* const);
+	//CRUDOBJ_GETTER(ba, asBytea, fusepp::RefBuffer<char>*, const fusepp::RefBuffer<char>* const);
 	CRUDOBJ_GETTER_SETTER(b, asBool, bool&, bool);
 
 private:
@@ -183,7 +183,7 @@ private:
 	{
 		ByteaValue() {}
 		//ByteaValue(const std::string& value) : value(value) {}
-		osg::ref_ptr<uflr::RefBuffer<char> > value;
+		osg::ref_ptr<fusepp::RefBuffer<char> > value;
 	};*/
 
 	struct BoolValue : public Value

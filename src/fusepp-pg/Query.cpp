@@ -26,7 +26,6 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 #include <fusepp/pg/Database.h>
 #include <fusepp/Error.h>
 #include <stdarg.h>
-//#include <uflr/Utils.h>
 #include <iomanip>
 #ifndef _WIN32
 #include <string.h>
@@ -37,7 +36,7 @@ using namespace fusepp;
 
 
 // ===========================================================================
-// uflrDB::Query implementation
+// fusepp::Query implementation
 // ===========================================================================
 
 Query::Query(DatabasePtr database, unsigned int constraints)
@@ -80,13 +79,9 @@ bool Query::execute(bool throwOnFail)
 	else
 	{
 		std::vector<Oid> types;
-		//osg::ref_ptr<uflr::RefBuffer<Oid> > types;
 		std::vector<const char*> values;
-		//osg::ref_ptr<uflr::RefBuffer<char*> > values;
 		std::vector<int> lengths;
-		//osg::ref_ptr<uflr::RefBuffer<int> > lengths;
 		std::vector<int> formats;
-		//osg::ref_ptr<uflr::RefBuffer<int> > formats;
 		
 		if (_byteParameters.size() != 0)
 		{
@@ -571,7 +566,7 @@ void Query::addParameterBytea(const char* const data, size_t size)
 	_byteParameters.push_back(std::pair<const char* const,size_t>(data, size));
 }
 
-//void Query::addParameterBytea(uflr::RefBuffer<char>* buffer)
+//void Query::addParameterBytea(fusepp::RefBuffer<char>* buffer)
 //{
 //	assert(buffer);
 //	_buffers.push_back(buffer);
@@ -614,7 +609,7 @@ std::ostream& Query::getStdIn()
 
 
 // ===========================================================================
-// uflrDB::Query::Error implementation
+// fusepp::Query::Error implementation
 // ===========================================================================
 
 Query::Error::Error(const Query& query) : fusepp::Error()
@@ -637,7 +632,7 @@ Query::Error::Error(const Query& query, const char* reason, ...)
 
 
 // ===========================================================================
-// uflrDB::TransactionBlock implementation
+// fusepp::TransactionBlock implementation
 // ===========================================================================
 
 TransactionBlock::TransactionBlock(DatabasePtr db) 
