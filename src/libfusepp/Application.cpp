@@ -32,7 +32,7 @@ using namespace fusepp;
 
 Application* Application::_s_instance(NULL);
 
-Application::Application(std::shared_ptr<FileSystem>& fs)
+Application::Application(FileSystemPtr fs)
 	: _fs(fs)
 {
 	assert(!_s_instance);

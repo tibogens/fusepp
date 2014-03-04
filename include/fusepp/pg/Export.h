@@ -21,35 +21,19 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef _FUSEPP_APPLICATION_H
-#define _FUSEPP_APPLICATION_H
+#ifndef _FUSEPP_PG_EXPORT_H
+#define _FUSEPP_PG_EXPORT_H
 
-#include <memory>
-#include <fusepp/Export.h>
-#include <fusepp/FileSystem.h>
+#ifdef _WIN32
+	#pragma warning (disable: 4251)
+	#ifdef fusepp_pg_EXPORTS
+		#define FUSEPP_PG_API __declspec(dllexport)
+	#else
+		#define FUSEPP_PG_API __declspec(dllimport)
+	#endif
+#else
+	#define FUSEPP_PG_API
+#endif
 
-namespace fusepp_impl { class Hooks; };
+#endif // _FUSEPP_PG_EXPORT_H
 
-namespace fusepp
-{
-
-class FUSEPP_API Application
-{
-public:
-	Application(FileSystemPtr fs);
-	virtual ~Application();
-
-	int run(int argc, char* argv[]);
-	
-
-private:
-	static Application* _s_instance;
-	friend class fusepp_impl::Hooks;
-	FileSystemPtr _fs;
-};
-
-typedef std::shared_ptr<Application> ApplicationPtr;
-
-};
-
-#endif //_FUSEPP_APPLICATION_H

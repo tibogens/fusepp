@@ -27,6 +27,7 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 #include <fusepp/Export.h>
 #include <string>
 #include <sys/stat.h>
+#include <memory>
 
 namespace fusepp
 {
@@ -39,6 +40,8 @@ public:
 
 private:
 };
+
+typedef std::shared_ptr<FileSystem> FileSystemPtr;
 
 class FUSEPP_API FS_getattr : public virtual FileSystem
 {

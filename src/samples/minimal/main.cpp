@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <sys/types.h>
 #include <iostream>
-using namespace fusepp;
 
-class MinimalFileSystem : public FS_getattr, public FS_readdir
+
+class MinimalFileSystem : public fusepp::FS_getattr, public fusepp::FS_readdir
 {
 public:
 	int getattr(const std::string& path, struct stat* buf)
@@ -75,8 +75,8 @@ public:
 
 int main(int argc, char* argv[])
 {
-	std::shared_ptr<fusepp::FileSystem> fs(new MinimalFileSystem());
-	std::shared_ptr<fusepp::Application> app(new fusepp::Application(fs));
+	fusepp::FileSystemPtr fs(new MinimalFileSystem());
+	fusepp::ApplicationPtr app(new fusepp::Application(fs));
 	
 	return app->run(argc, argv);
 }

@@ -21,35 +21,18 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef _FUSEPP_APPLICATION_H
-#define _FUSEPP_APPLICATION_H
+#ifndef _FUSEPP_PG_DBMSBACKEND_H
+#define _FUSEPP_PG_DBMSBACKEND_H
 
-#include <memory>
-#include <fusepp/Export.h>
-#include <fusepp/FileSystem.h>
+#include <fusepp/pg/Export.h>
 
-namespace fusepp_impl { class Hooks; };
+// Forward declare internal PostgreSQL types so that we can have them
+// as class members without forcing clients to include <libpq-fe.h> as well.
+// This softens the depedency of fusepp-pg on PostgreSQL
+#ifndef LIBPQ_FE_H
+struct PGconn;
+struct PGresult;
+typedef unsigned int Oid;
+#endif
 
-namespace fusepp
-{
-
-class FUSEPP_API Application
-{
-public:
-	Application(FileSystemPtr fs);
-	virtual ~Application();
-
-	int run(int argc, char* argv[]);
-	
-
-private:
-	static Application* _s_instance;
-	friend class fusepp_impl::Hooks;
-	FileSystemPtr _fs;
-};
-
-typedef std::shared_ptr<Application> ApplicationPtr;
-
-};
-
-#endif //_FUSEPP_APPLICATION_H
+#endif // _FUSEPP_PG_DBMSBACKEND_H

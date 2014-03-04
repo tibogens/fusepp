@@ -21,35 +21,15 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef _FUSEPP_APPLICATION_H
-#define _FUSEPP_APPLICATION_H
 
-#include <memory>
-#include <fusepp/Export.h>
 #include <fusepp/FileSystem.h>
+#include <fuse.h>
+using namespace fusepp;
 
-namespace fusepp_impl { class Hooks; };
-
-namespace fusepp
+FileSystem::FileSystem()
 {
+}
 
-class FUSEPP_API Application
+FileSystem::~FileSystem()
 {
-public:
-	Application(FileSystemPtr fs);
-	virtual ~Application();
-
-	int run(int argc, char* argv[]);
-	
-
-private:
-	static Application* _s_instance;
-	friend class fusepp_impl::Hooks;
-	FileSystemPtr _fs;
-};
-
-typedef std::shared_ptr<Application> ApplicationPtr;
-
-};
-
-#endif //_FUSEPP_APPLICATION_H
+}
