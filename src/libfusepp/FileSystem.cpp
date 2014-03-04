@@ -33,3 +33,10 @@ FileSystem::FileSystem()
 FileSystem::~FileSystem()
 {
 }
+
+FS_readdir::DirectoryFiller::DirectoryFiller()
+{
+}
+FS_readdir::DirectoryFiller::~DirectoryFiller()
+{
+}

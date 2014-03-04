@@ -21,44 +21,33 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef _FUSEPP_FILESYSTEM_H
-#define _FUSEPP_FILESYSTEM_H
+#ifndef _FUSEPP_APPLICATION_H
+#define _FUSEPP_APPLICATION_H
 
+#include <memory>
 #include <fusepp/Export.h>
-#include <string>
-#include <sys/stat.h>
+#include <fusepp/FileSystem.h>
+
+namespace fusepp_impl { class Hooks; };
 
 namespace fusepp
 {
 
-class FUSEPP_API FileSystem
+class FUSEPP_API Application
 {
 public:
-	FileSystem();
-	virtual ~FileSystem();
+	Application(std::shared_ptr<FileSystem>& fs);
+	virtual ~Application();
+
+	int run(int argc, char* argv[]);
+	
 
 private:
-};
-
-class FUSEPP_API FS_getattr : public virtual FileSystem
-{
-public:
-	virtual int getattr(const std::string& path, struct stat* buf) = 0;
-};
-
-class FUSEPP_API FS_readdir : public virtual FileSystem
-{
-public:
-	class FUSEPP_API DirectoryFiller
-	{
-	public:
-		DirectoryFiller();
-		virtual ~DirectoryFiller();
-		virtual void add(const std::string& name) = 0;
-	};
-	virtual int readdir(const std::string& path, DirectoryFiller& filler) = 0;
+	static Application* _s_instance;
+	friend class fusepp_impl::Hooks;
+	std::shared_ptr<FileSystem> _fs;
 };
 
 };
 
-#endif //_FUSEPP_FILESYSTEM_H
+#endif //_FUSEPP_APPLICATION_H

@@ -31,9 +31,52 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include <fusepp/FileSystem.h>
+#include <fusepp/Application.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <iostream>
+using namespace fusepp;
+
+class MinimalFileSystem : public FS_getattr, public FS_readdir
+{
+public:
+	int getattr(const std::string& path, struct stat* buf)
+	{
+		std::cout << "getattr(" << path << ")" << std::endl;
+		if (path == "/" || path == "/bar")
+		{
+			buf->st_mode = S_IFDIR | 0755;
+			buf->st_uid = getuid();
+			buf->st_gid = getgid();
+			return 0;
+		}
+		else if (path == "/foo")
+		{
+			buf->st_mode = S_IFREG | 0644;
+			buf->st_uid = getuid();
+			buf->st_gid = getgid();
+			return 0;
+		}
+		return -ENOENT;
+	}
+
+	int readdir(const std::string& path, DirectoryFiller& filler)
+	{
+		std::cout << "readdir(" << path << ")" << std::endl;
+		if (path == "/")
+		{
+			filler.add("foo");
+			filler.add("bar");
+		}
+		return 0;
+	}
+};
+
 
 int main(int argc, char* argv[])
 {
-	return 0;
+	std::shared_ptr<fusepp::FileSystem> fs(new MinimalFileSystem());
+	std::shared_ptr<fusepp::Application> app(new fusepp::Application(fs));
+	
+	return app->run(argc, argv);
 }

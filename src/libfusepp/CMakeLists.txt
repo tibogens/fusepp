@@ -1,19 +1,26 @@
 SET(LIB_NAME libfusepp)
 
+IF (NOT WIN32)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FUSE fuse REQUIRED)
 include_directories(${FUSE_INCLUDEDIR})
 add_definitions(${FUSE_CFLAGS})
+ELSE (NOT WIN32)
+include_directories(${fusepp_SOURCE_DIR}/fuse-winstub)
+add_definitions(-D_FILE_OFFSET_BITS=64)
+ENDIF (NOT WIN32)
 
 SET(HEADER_PATH ${fusepp_SOURCE_DIR}/include/fusepp)
 
 SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Error.h
 	${HEADER_PATH}/Export.h
+	${HEADER_PATH}/Application.h
 	${HEADER_PATH}/FileSystem.h
 )
 
 SET(LIB_SRC
+	Application.cpp
 	Error.cpp
 	FileSystem.cpp
 )

@@ -11,4 +11,6 @@ OPTION (FUSEPP_BUILD_TESTS "Build the tests" ON)
 
 INCLUDE_DIRECTORIES (${fusepp_SOURCE_DIR}/include )
 
+add_definitions("-std=c++11")
+
 ADD_SUBDIRECTORY(src)
