@@ -43,11 +43,15 @@ private:
 
 typedef std::shared_ptr<FileSystem> FileSystemPtr;
 
+
+
 class FUSEPP_API FS_getattr : public virtual FileSystem
 {
 public:
 	virtual int getattr(const std::string& path, struct stat* buf) = 0;
 };
+
+
 
 class FUSEPP_API FS_readdir : public virtual FileSystem
 {
@@ -55,9 +59,10 @@ public:
 	class FUSEPP_API DirectoryFiller
 	{
 	public:
+		static const ino_t INVALID_ID = (ino_t)~0;
 		DirectoryFiller();
 		virtual ~DirectoryFiller();
-		virtual void add(const std::string& name) = 0;
+		virtual void add(const std::string& name, ino_t id = INVALID_ID) = 0;
 	};
 	virtual int readdir(const std::string& path, DirectoryFiller& filler) = 0;
 };

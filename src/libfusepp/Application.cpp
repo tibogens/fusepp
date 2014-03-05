@@ -28,6 +28,7 @@ along with fusepp.  If not, see <http://www.gnu.org/licenses/>.
 #include <string.h>
 #include <assert.h>
 #include <iostream>
+#include <fusepp/Error.h>
 using namespace fusepp;
 
 Application* Application::_s_instance(NULL);
@@ -46,10 +47,30 @@ Application::~Application()
 
 namespace fusepp_impl
 {
+
 #define GET_FS_INSTANCE(cls) \
 	assert(Application::_s_instance); \
 	cls* instance = dynamic_cast<cls*>(Application::_s_instance->_fs.get()); \
 	assert(instance)
+
+#define CALL_FS_IMPL_BEGIN() \
+	try {
+
+#define CALL_FS_IMPL_END(errval) \
+	} catch (Error& err) { \
+		std::cout << "[ERROR] Unhandled fusepp::Error: " << err << std::endl; \
+	} catch (std::exception& err) { \
+		std::cout << "[ERROR] Unhandled std::exception: " << err.what() << std::endl; \
+	} catch (...) { \
+		std::cout << "[ERROR] Unhandled (unknown) exception!" << std::endl; \
+	} \
+	return errval
+
+#define CALL_FS_IMPL(cls, funcall, errval) \
+	GET_FS_INSTANCE(cls); \
+	CALL_FS_IMPL_BEGIN() \
+		return instance->funcall; \
+	CALL_FS_IMPL_END(errval)
 
 	class Hooks
 	{
@@ -57,8 +78,7 @@ namespace fusepp_impl
 
 		static int getattr(const char* path, struct stat* buf)
 		{
-			GET_FS_INSTANCE(FS_getattr);
-			return instance->getattr(path, buf);
+			CALL_FS_IMPL(FS_getattr, getattr(path, buf), -ENOENT);
 		}
 
 		class RealDirectoryFiller : public fusepp::FS_readdir::DirectoryFiller
@@ -67,9 +87,22 @@ namespace fusepp_impl
 			RealDirectoryFiller(void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 				: fusepp::FS_readdir::DirectoryFiller(), _buf(buf), _filler(filler), _offset(offset), _fi(fi)
 			{}
-			void add(const std::string& name)
+			void add(const std::string& name, ino_t id = INVALID_ID)
 			{
-				_filler(_buf, name.c_str(), NULL, 0);
+				if (id != INVALID_ID)
+				{
+					struct stat s;
+					memset(&s, 0, sizeof(s));
+					s.st_mode = S_IFREG | 0644;
+					s.st_ino = id;
+					s.st_nlink = 1;
+					_filler(_buf, name.c_str(), &s, 0);
+					std::cout << "set using struct stat to ino " << id << std::endl;
+				}
+				else
+				{
+					_filler(_buf, name.c_str(), NULL, 0);
+				}
 			}
 		private:
 			void* _buf;
@@ -81,11 +114,16 @@ namespace fusepp_impl
 		static int readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 		{
 			GET_FS_INSTANCE(FS_readdir);
-			RealDirectoryFiller f(buf, filler, offset, fi);
-			return instance->readdir(path, f);
+			CALL_FS_IMPL_BEGIN();
+				RealDirectoryFiller f(buf, filler, offset, fi);
+				return instance->readdir(path, f);
+			CALL_FS_IMPL_END(-EACCES);
 		}
 
 	};
+
+#undef GET_FS_INSTANCE
+#undef CALL_FS_IMPL
 
 };
 

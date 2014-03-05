@@ -39,11 +39,13 @@ Database::Database() : _pgconn(NULL)
 #ifdef _DEBUG
 	_ownerThread = fusepp::getCurrentThreadId();
 #endif
+	std::cout << "Created fusepp::Database instance" << std::endl;
 }
 
 Database::~Database()
 {
 	disconnect();
+	std::cout << "Destroyed fusepp::Database instance" << std::endl;
 }
 
 bool Database::connect(const std::string& host,
